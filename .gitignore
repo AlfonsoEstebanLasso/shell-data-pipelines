@@ -1,0 +1,18 @@
+# Downloaded / extracted data
+*.zip
+*.log
+logs/
+
+# Generated outputs
+*.png
+*.csv
+url_counts.csv
+component_data.csv
+out_*.log
+
+# Editor / OS clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.swp
