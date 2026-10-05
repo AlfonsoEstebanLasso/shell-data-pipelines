@@ -13,7 +13,7 @@ Coursework project — BSc in Applied Data Science, Universitat Oberta de Catalu
 
 A collection of GNU/Linux command-line data-processing work: a five-script log-analysis pipeline (bash + awk + gnuplot) and a small toolkit of standalone awk/sed/grep scripts for CSV wrangling. The kind of plain-text plumbing used daily in bioinformatics and data-engineering work on Unix systems.
 
-> Script comments are in Spanish (original coursework code, kept as written). All new text and filenames in this repository are in English.
+> Script comments were translated to English from the original Spanish. The code itself is unchanged, so the messages and chart labels printed by the scripts remain in Spanish.
 
 ## Objective
 

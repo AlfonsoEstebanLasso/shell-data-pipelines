@@ -1,57 +1,57 @@
 #!/bin/bash
 
-# Verificamos si se proporcionó una URL como parámetro
+# Check whether a URL was provided as a parameter
 if [ -z "$1" ]; then
-  # Si no se proporciona un parámetro, mostrar el uso correcto y salir con código de error 1
+  # If no parameter is provided, show the correct usage and exit with error code 1
   echo "Uso: $0 <URL_del_archivo_ZIP>"
   exit 1
 fi
 
-# URL del archivo ZIP proporcionado como parámetro
+# URL of the ZIP file provided as a parameter
 ZIP_URL="$1"
-# Nombre del archivo ZIP a guardar localmente
+# Name of the ZIP file to save locally
 ZIP_FILE="logs.zip"
 
-# Función para descargar el archivo desde Google Drive
+# Function to download the file from Google Drive
 download_from_gdrive() {
-  # Extrae el ID del archivo de la URL
+  # Extracts the file ID from the URL
   FILE_ID=$(echo "$1" | grep -o 'd/.*' | cut -d'/' -f2)
-  # Obtener el código de confirmación necesario para descargar el archivo
+  # Get the confirmation code needed to download the file
   CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://drive.google.com/uc?export=download&id=${FILE_ID}" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1/p')
-  # Descarga el archivo usando el código de confirmación
+  # Downloads the file using the confirmation code
   wget --quiet --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=${CONFIRM}&id=${FILE_ID}" -O "$2"
-  # Elimina las cookies temporales
+  # Removes the temporary cookies
   rm -rf /tmp/cookies.txt
 }
 
-# Descargamos el archivo ZIP desde Google Drive
+# Download the ZIP file from Google Drive
 download_from_gdrive "$ZIP_URL" "$ZIP_FILE"
 
-# Extraemos el contenido del archivo ZIP en el directorio actual, suprimiendo la salida
+# Extract the contents of the ZIP file into the current directory, suppressing the output
 unzip -o $ZIP_FILE > /dev/null 2>&1
 
-# Función para procesar el archivo android.log
+# Function to process the android.log file
 process_android_log() {
   local LOG_FILE=$1
   local INDEX=$2
-  # Calcula el hash MD5 del archivo
+  # Computes the MD5 hash of the file
   MD5=$(md5sum "$LOG_FILE" | cut -d' ' -f1)
-  # Cuenta el número total de líneas en el archivo
+  # Counts the total number of lines in the file
   TOTAL_LINES=$(wc -l < "$LOG_FILE")
-  # Obtiene el nombre del archivo sin la extensión .log
+  # Gets the file name without the .log extension
   FILENAME=$(basename "$LOG_FILE" .log)
   
-  # Obtiene la primera y última línea del archivo
+  # Gets the first and last line of the file
   FIRST_RECORD=$(head -n 1 "$LOG_FILE")
   LAST_RECORD=$(tail -n 1 "$LOG_FILE")
   
-  # Extraemos la fecha y hora del primer y último registro
+  # Extract the date and time of the first and last record
   DATE_FIRST=$(echo $FIRST_RECORD | cut -d' ' -f1)
   TIME_FIRST=$(echo $FIRST_RECORD | cut -d' ' -f2)
   DATE_LAST=$(echo $LAST_RECORD | cut -d' ' -f1)
   TIME_LAST=$(echo $LAST_RECORD | cut -d' ' -f2)
 
-  # Imprimimos los resultados
+  # Print the results
   echo "MD5: $MD5"
   echo "Total Number of Lines: $TOTAL_LINES"
   echo "Filename_$INDEX: $FILENAME"
@@ -62,28 +62,28 @@ process_android_log() {
   echo "****************"
 }
 
-# Función para procesar archivos apache.log y out_200.log
+# Function to process apache.log and out_200.log files
 process_apache_log() {
   local LOG_FILE=$1
   local INDEX=$2
-  # Calcular el hash MD5 del archivo
+  # Compute the MD5 hash of the file
   MD5=$(md5sum "$LOG_FILE" | cut -d' ' -f1)
-  # Cuenta el número total de líneas en el archivo
+  # Counts the total number of lines in the file
   TOTAL_LINES=$(wc -l < "$LOG_FILE")
-  # Obtiene el nombre del archivo sin la extensión .log
+  # Gets the file name without the .log extension
   FILENAME=$(basename "$LOG_FILE" .log)
   
-  # Obtenemos la primera y última línea del archivo
+  # Get the first and last line of the file
   FIRST_RECORD=$(head -n 1 "$LOG_FILE")
   LAST_RECORD=$(tail -n 1 "$LOG_FILE")
   
-  # Extraemos la fecha y hora del primer y último registro
+  # Extract the date and time of the first and last record
   DATE_FIRST=$(echo $FIRST_RECORD | sed 's/.*\[//' | cut -d':' -f1)
   TIME_FIRST=$(echo $FIRST_RECORD | sed 's/.*\[//' | cut -d':' -f2- | cut -d' ' -f1)
   DATE_LAST=$(echo $LAST_RECORD | sed 's/.*\[//' | cut -d':' -f1)
   TIME_LAST=$(echo $LAST_RECORD | sed 's/.*\[//' | cut -d':' -f2- | cut -d' ' -f1)
 
-  # Imprimimos los resultados
+  # Print the results
   echo "MD5: $MD5"
   echo "Total Number of Lines: $TOTAL_LINES"
   echo "Filename_$INDEX: $FILENAME"
@@ -94,21 +94,21 @@ process_apache_log() {
   echo "****************"
 }
 
-# Procesamos cada archivo LOG en el directorio actual
+# Process each LOG file in the current directory
 INDEX=1
 for LOG_FILE in ./*.log; do
   if [ -f "$LOG_FILE" ]; then
     case $LOG_FILE in
-      # Procesa archivos android.log
+      # Processes android.log files
       *android.log)
         process_android_log "$LOG_FILE" $INDEX
         ;;
-      # Procesa archivos apache.log y out_200.log
+      # Processes apache.log and out_200.log files
       *apache.log|*out_200.log)
         process_apache_log "$LOG_FILE" $INDEX
         ;;
     esac
-    # Incrementa el índice para el siguiente archivo
+    # Increments the index for the next file
     INDEX=$((INDEX+1))
   fi
 done

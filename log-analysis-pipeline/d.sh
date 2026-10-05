@@ -1,27 +1,27 @@
 #!/bin/bash
 
-# Verificamos si se proporcionó un archivo como parámetro
+# Check whether a file was provided as a parameter
 if [ -z "$1" ]; then
-  # Si no se proporciona un parámetro, mostrar el uso correcto y salir con código de error 1
+  # If no parameter is provided, show the correct usage and exit with error code 1
   echo "Uso: $0 <archivo_log>"
   exit 1
 fi
 
-# Asignamos el primer parámetro a la variable LOG_FILE
+# Assign the first parameter to the LOG_FILE variable
 LOG_FILE="$1"
-# Definimos nombres de archivos de salida
+# Define output file names
 CSV_FILE="component_data.csv"
 COMPONENT_GRAPH="component_counts.png"
 SECONDS_GRAPH="seconds_counts.png"
 
-# Verificamos si el archivo de log existe
+# Check whether the log file exists
 if [ ! -f "$LOG_FILE" ]; then
-  # Si el archivo no existe, mostrar error y salir
+  # If the file does not exist, show an error and exit
   echo "Error: El archivo $LOG_FILE no existe."
   exit 1
 fi
 
-# Extraemos componentes y segundos, contar las ocurrencias y calcular el total de segundos por componente
+# Extract components and seconds, count the occurrences and compute the total seconds per component
 awk '
 {
   split($2, time, ":"); 
@@ -36,12 +36,12 @@ END {
   for (comp in count) 
     print comp "," count[comp] "," component_times[comp];
 }
-' "$LOG_FILE" | sort -t',' -k2 -nr > "$CSV_FILE"  # Guarda la salida en el archivo CSV y ordenar por la segunda columna (Count) en orden descendente
+' "$LOG_FILE" | sort -t',' -k2 -nr > "$CSV_FILE"  # Saves the output to the CSV file and sorts by the second column (Count) in descending order
 
-# Mensaje de confirmación de creación del archivo CSV
+# Confirmation message for the creation of the CSV file
 echo "Archivo $CSV_FILE generado con éxito."
 
-# Generamos el gráfico de componentes con gnuplot
+# Generate the components chart with gnuplot
 gnuplot <<- EOF
   set terminal png size 800,600
   set output "$COMPONENT_GRAPH"
@@ -55,7 +55,7 @@ gnuplot <<- EOF
   plot "$CSV_FILE" using 2:xtic(1) title 'Componentes'
 EOF
 
-# Generamos el gráfico de segundos por componente con gnuplot
+# Generate the seconds-per-component chart with gnuplot
 gnuplot <<- EOF
   set terminal png size 800,600
   set output "$SECONDS_GRAPH"
@@ -69,6 +69,6 @@ gnuplot <<- EOF
   plot "$CSV_FILE" using 3:xtic(1) title 'Segundos'
 EOF
 
-# Mensaje de confirmación de creación de los gráficos
+# Confirmation message for the creation of the charts
 echo "Gráficos $COMPONENT_GRAPH y $SECONDS_GRAPH generados con éxito."
 

@@ -1,12 +1,12 @@
 #!/bin/sed -f
 
-# Eliminamos registros si el campo "city" o "duration (seconds)" está vacío
+# Delete records if the "city" or "duration (seconds)" field is empty
 /,\s*,/d
 /,,$/d
 
-# Cambiamos duraciones numéricas estrictamente menores que 100 a "Short"
+# Change numeric durations strictly less than 100 to "Short"
 s/,\([0-9]\{1,2\}\(\.[0-9]*\)\?\),/,Short,/
 
-# Cambiamos duraciones numéricas mayores o iguales a 100 a "Long"
+# Change numeric durations greater than or equal to 100 to "Long"
 s/,\([0-9]\{3,\}\(\.[0-9]*\)\?\),/,Long,/
 

@@ -1,46 +1,46 @@
 #!/bin/bash
 
-# Step A: Ejecuta a.sh para descargar y procesar el archivo logs.zip
+# Step A: Runs a.sh to download and process the logs.zip file
 chmod +x a.sh
-# Ejecuta el script a.sh con la URL proporcionada para descargar y procesar logs.zip
+# Runs the a.sh script with the provided URL to download and process logs.zip
 ./a.sh https://drive.google.com/file/d/YOUR_FILE_ID/download?usp=drive_link/logs.zip
 
-# Step B: Ejecuta b.sh para procesar apache.log para diferentes códigos HTTP
+# Step B: Runs b.sh to process apache.log for different HTTP codes
 chmod +x b.sh
-# Ejecuta b.sh para procesar apache.log filtrando por el código HTTP 200 y genera out_200.log
+# Runs b.sh to process apache.log filtering by HTTP code 200 and generates out_200.log
 ./b.sh ./apache.log 200 out_200.log
 
 
-# Ejecuta b.sh para procesar apache.log filtrando por el código HTTP 304 y genera out_304.log
+# Runs b.sh to process apache.log filtering by HTTP code 304 and generates out_304.log
 ./b.sh ./apache.log 304 out_304.log
 
 
-# Ejecuta b.sh para procesar apache.log filtrando por el código HTTP 404 y genera out_404.log
+# Runs b.sh to process apache.log filtering by HTTP code 404 and generates out_404.log
 ./b.sh ./apache.log 404 out_404.log
 
-# Las siguientes líneas contienen posibles errores o inconsistencias:
+# The following lines contain possible errors or inconsistencies:
 ./b.sh ./apache.log
-# No se proporciona el segundo y tercer parámetro, lo que puede causar un error según la definición de b.sh
+# The second and third parameters are not provided, which may cause an error according to the definition of b.sh
 
 ./b.sh ./apache.csv 404 out_404.log
-# Proporciona un archivo CSV en lugar de un archivo de log, lo que puede no ser esperado por b.sh
+# Provides a CSV file instead of a log file, which may not be expected by b.sh
 
 ./b.sh ./apache.log 404 out_304.log
-# El nombre del archivo de salida no coincide con el código HTTP filtrado, lo que genera un error según la lógica de b.sh
+# The output file name does not match the filtered HTTP code, which produces an error according to the logic of b.sh
 
 ./b.sh ./apache.log 300 out_300.log
-# El código HTTP 300 no está en la lista de códigos permitidos, lo que genera un error según la lógica de b.sh
+# HTTP code 300 is not in the list of allowed codes, which produces an error according to the logic of b.sh
 
-# Step C: Ejecuta c.sh para analizar out_200.log
+# Step C: Runs c.sh to analyze out_200.log
 chmod +x c.sh
-# Ejecuta el script c.sh para analizar el archivo out_200.log
+# Runs the c.sh script to analyze the out_200.log file
 ./c.sh ./out_200.log
 
-# Step D: Ejecuta d.sh para analizar el archivo android.log
+# Step D: Runs d.sh to analyze the android.log file
 chmod +x d.sh
-# Ejecuta el script d.sh para analizar el archivo android.log
+# Runs the d.sh script to analyze the android.log file
 ./d.sh ./android.log
 
-# Mensaje final indicando que todos los scripts se han ejecutado correctamente
+# Final message indicating that all the scripts have run correctly
 echo "Todos los scripts se han ejecutado correctamente."
 

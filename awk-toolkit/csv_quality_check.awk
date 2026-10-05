@@ -1,10 +1,10 @@
 BEGIN {
-    FS = ",";  # Establecemos la coma como delimitador de campos
-    OFS = ","; # Establecemos la coma como delimitador de salida
+    FS = ",";  # Set the comma as the field delimiter
+    OFS = ","; # Set the comma as the output delimiter
 }
 
 NR == 1 {
-    # Guardamos la cabecera y la escribimos en los archivos de salida
+    # Save the header and write it to the output files
     header = $0;
     print header > "country_wrong.csv"
     print header > "duration_wrong.csv"
@@ -12,17 +12,17 @@ NR == 1 {
 }
 
 NR > 1 {
-    # Verificamos de "country"
+    # Check "country"
     if (length($4) != 2) {
         print $0 > "country_wrong.csv"
     }
 
-    # Verificamos de "duration (seconds)"
+    # Check "duration (seconds)"
     if ($6 != "" && ($6 ~ /\./ || $6+0 != $6)) {
         print $0 > "duration_wrong.csv"
     }
 
-    # Verificamos "date posted"
+    # Check "date posted"
     split($9, date, "/")
     month = date[1]
     day = date[2]
@@ -33,7 +33,7 @@ NR > 1 {
 }
 
 END {
-    # Cerrar archivos para asegurar que se escriben los buffers
+    # Close files to ensure the buffers are written
     close("country_wrong.csv")
     close("duration_wrong.csv")
     close("date_posted_wrong.csv")
